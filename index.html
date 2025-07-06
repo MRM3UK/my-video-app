@@ -3,115 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Image Resizer & Converter</title>
+    <title>Advanced Image Resizer & Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #50E3C2;
+            --text-color: #333;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --border-color: #e0e6ed;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background-color: #f4f4f4;
+            background-color: var(--bg-color);
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
+            color: var(--text-color);
         }
+
         .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-color: var(--card-bg);
+            padding: 35px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-medium);
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             text-align: center;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid var(--border-color);
         }
+
         h1 {
-            color: #333;
-            margin-bottom: 25px;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 600;
         }
+
         .upload-area {
-            border: 2px dashed #cccccc;
-            padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 25px;
+            border: 3px dashed var(--border-color);
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
             cursor: pointer;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
+            background-color: #fafbfd;
+            position: relative;
+            overflow: hidden; /* To contain the hidden input */
         }
         .upload-area:hover {
-            border-color: #007bff;
+            border-color: var(--primary-color);
+            background-color: #eaf1f8;
+            transform: translateY(-2px);
+        }
+        .upload-area p {
+            margin: 0;
+            font-size: 1.1em;
+            color: #777;
+            font-weight: 500;
         }
         input[type="file"] {
-            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 1; /* Make it clickable */
         }
+
         .preview-area {
-            margin-top: 20px;
-            margin-bottom: 25px;
+            margin-top: 25px;
+            margin-bottom: 30px;
             display: none; /* Initially hidden */
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .preview-area h2 {
+            font-size: 1.3em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
         }
         .preview-area img {
             max-width: 100%;
             height: auto;
             border-radius: 8px;
             border: 1px solid #ddd;
-            max-height: 300px;
+            max-height: 350px; /* Slightly larger preview */
             object-fit: contain;
+            box-shadow: 0 4px 10px var(--shadow-light);
         }
+
         .input-group {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
         }
-        .input-group div {
-            flex: 1;
-            min-width: 150px;
+        .input-item {
             text-align: left;
         }
-        .input-group label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #555;
+        .input-item label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-color);
             display: block;
+            font-size: 0.95em;
         }
         .input-group input, .input-group select {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            width: calc(100% - 24px); /* Full width minus padding */
-            font-size: 16px;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1em;
             box-sizing: border-box;
+            background-color: #fcfdff;
+            transition: all 0.3s ease;
         }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+
         button {
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: white;
-            padding: 12px 25px;
+            padding: 14px 30px;
             border: none;
-            border-radius: 5px;
-            font-size: 18px;
+            border-radius: 8px;
+            font-size: 1.15em;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 15px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 5px 15px var(--shadow-light);
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #3a7bd2;
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: translateY(0);
         }
         .error-message {
-            color: red;
-            margin-top: 10px;
+            color: #e74c3c;
+            margin-top: 15px;
+            font-weight: 500;
             display: none;
+            font-size: 0.95em;
         }
+
         /* Loader styles */
         .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #007bff;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
             border-radius: 50%;
             width: 30px;
             height: 30px;
             animation: spin 1s linear infinite;
             display: none; /* Initially hidden */
-            margin: 20px auto;
+            margin: 25px auto;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -133,15 +200,15 @@
         </div>
 
         <div class="input-group">
-            <div>
+            <div class="input-item">
                 <label for="newWidth">New Width (px):</label>
-                <input type="number" id="newWidth" placeholder="e.g., 800" value="800">
+                <input type="number" id="newWidth" placeholder="e.g., 800" value="800" min="1">
             </div>
-            <div>
+            <div class="input-item">
                 <label for="newHeight">New Height (px):</label>
-                <input type="number" id="newHeight" placeholder="e.g., 600" value="600">
+                <input type="number" id="newHeight" placeholder="e.g., 600" value="600" min="1">
             </div>
-            <div>
+            <div class="input-item">
                 <label for="outputFormat">Output Format:</label>
                 <select id="outputFormat">
                     <option value="image/jpeg">JPEG</option>
@@ -170,6 +237,39 @@
 
         let originalImageFile = null;
 
+        // Function to update dimensions based on aspect ratio
+        function updateDimensions(source) {
+            if (!originalImageFile) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const originalWidth = img.width;
+                    const originalHeight = img.height;
+
+                    let newWidth = parseInt(newWidthInput.value);
+                    let newHeight = parseInt(newHeightInput.value);
+
+                    // If user changed width, update height to maintain aspect ratio
+                    if (source === 'width' && newWidth > 0) {
+                        newHeight = Math.round((newWidth / originalWidth) * originalHeight);
+                        newHeightInput.value = newHeight;
+                    } 
+                    // If user changed height, update width to maintain aspect ratio
+                    else if (source === 'height' && newHeight > 0) {
+                        newWidth = Math.round((newHeight / originalHeight) * originalWidth);
+                        newWidthInput.value = newWidth;
+                    } else if (source === 'file') { // When a new file is uploaded, set sensible defaults
+                        newWidthInput.value = originalWidth > 1200 ? 1200 : originalWidth;
+                        newHeightInput.value = originalHeight > 900 ? 900 : originalHeight;
+                    }
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(originalImageFile);
+        }
+
         // Handle file selection (click)
         uploadArea.addEventListener('click', () => {
             imageUpload.click();
@@ -185,6 +285,7 @@
                     previewArea.style.display = 'block';
                     processButton.disabled = false; // Enable button
                     errorMessage.style.display = 'none'; // Hide error message
+                    updateDimensions('file'); // Update dimensions when a new file is loaded
                 };
                 reader.readAsDataURL(file);
             }
@@ -193,16 +294,16 @@
         // Handle drag and drop
         uploadArea.addEventListener('dragover', (event) => {
             event.preventDefault();
-            uploadArea.style.borderColor = '#007bff';
+            uploadArea.style.borderColor = var(--primary-color);
         });
 
         uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.borderColor = '#cccccc';
+            uploadArea.style.borderColor = var(--border-color);
         });
 
         uploadArea.addEventListener('drop', (event) => {
             event.preventDefault();
-            uploadArea.style.borderColor = '#cccccc';
+            uploadArea.style.borderColor = var(--border-color);
             const file = event.dataTransfer.files[0];
             if (file) {
                 originalImageFile = file;
@@ -212,10 +313,15 @@
                     previewArea.style.display = 'block';
                     processButton.disabled = false; // Enable button
                     errorMessage.style.display = 'none'; // Hide error message
+                    updateDimensions('file'); // Update dimensions when a new file is loaded
                 };
                 reader.readAsDataURL(file);
             }
         });
+
+        // Event listeners for width and height input changes to maintain aspect ratio
+        newWidthInput.addEventListener('input', () => updateDimensions('width'));
+        newHeightInput.addEventListener('input', () => updateDimensions('height'));
 
         processButton.addEventListener('click', () => {
             if (!originalImageFile) {
@@ -226,7 +332,12 @@
             const newWidth = parseInt(newWidthInput.value);
             const newHeight = parseInt(newHeightInput.value);
             const outputFormat = outputFormatSelect.value;
-            const outputExtension = outputFormat.split('/')[1] || 'png'; // Get extension from mime type
+            let outputExtension = outputFormat.split('/')[1] || 'png'; // Get extension from mime type
+
+            // Handle jpeg edge case for extension
+            if (outputExtension === 'jpeg') {
+                outputExtension = 'jpg';
+            }
 
             if (isNaN(newWidth) || newWidth <= 0 || isNaN(newHeight) || newHeight <= 0) {
                 showError("Please enter valid positive numbers for width and height.");
@@ -252,10 +363,14 @@
                     if (dotIndex > -1) {
                         fileName = fileName.substring(0, dotIndex);
                     }
-                    const newFileName = `${fileName}_resized.${outputExtension}`;
+                    const newFileName = `${fileName}_${newWidth}x${newHeight}.${outputExtension}`;
 
                     // Convert canvas to a data URL and create a download link
                     canvas.toBlob((blob) => {
+                        if (!blob) {
+                            showError("Failed to process image. Try a different format or image.");
+                            return;
+                        }
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
                         a.href = url;
@@ -267,9 +382,20 @@
 
                         loader.style.display = 'none'; // Hide loader
                         processButton.disabled = false; // Re-enable button
-                    }, outputFormat); // Use selected format for output
+                    }, outputFormat, 0.9); // 0.9 quality for JPEG, ignored for PNG/WebP
+
+                };
+                img.onerror = () => {
+                    showError("Could not load the image. Please ensure it's a valid image file.");
+                    loader.style.display = 'none';
+                    processButton.disabled = false;
                 };
                 img.src = event.target.result;
+            };
+            reader.onerror = () => {
+                showError("Failed to read the image file.");
+                loader.style.display = 'none';
+                processButton.disabled = false;
             };
             reader.readAsDataURL(originalImageFile);
         });
