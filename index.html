@@ -3,333 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Drive Downloader Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Simple Image Resizer & Converter</title>
     <style>
-        /* Global Styles */
-        :root {
-            --primary-color: #4CAF50;
-            --primary-dark: #45a049;
-            --secondary-color: #007BFF;
-            --background-light: #f4f7f6;
-            --background-dark: #e0e5ec;
-            --text-color: #333;
-            --card-background: #ffffff;
-            --border-color: #e0e0e0;
-            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.08);
-            --success-color: #28a745;
-            --error-color: #dc3545;
-            --info-color: #007bff;
-        }
-
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
-            background: var(--background-light);
-            color: var(--text-color);
+            background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
-            line-height: 1.6;
         }
-
-        /* Container */
         .container {
-            background: var(--card-background);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-light);
-            text-align: center;
-            max-width: 600px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             width: 100%;
-            transition: all 0.3s ease-in-out;
-            border: 1px solid var(--border-color);
+            max-width: 600px;
+            text-align: center;
         }
-
-        .container:hover {
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-        }
-
         h1 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            font-weight: 700;
-            font-size: 2.2em;
-        }
-
-        p {
+            color: #333;
             margin-bottom: 25px;
-            font-size: 1.1em;
-            color: #555;
         }
-
-        /* Input Group */
-        .input-group {
-            display: flex;
-            margin-bottom: 25px;
-            border: 1px solid var(--border-color);
+        .upload-area {
+            border: 2px dashed #cccccc;
+            padding: 30px;
             border-radius: 8px;
-            overflow: hidden;
-            background-color: var(--background-light);
+            margin-bottom: 25px;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
         }
-
-        input[type="text"] {
-            flex-grow: 1;
-            padding: 15px 20px;
-            border: none;
-            outline: none;
-            font-size: 1em;
-            background: transparent;
-            color: var(--text-color);
+        .upload-area:hover {
+            border-color: #007bff;
         }
-
-        input[type="text"]::placeholder {
-            color: #888;
+        input[type="file"] {
+            display: none;
         }
-
-        /* Buttons */
-        .btn {
-            background-color: var(--primary-color);
+        .preview-area {
+            margin-top: 20px;
+            margin-bottom: 25px;
+            display: none; /* Initially hidden */
+        }
+        .preview-area img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            max-height: 300px;
+            object-fit: contain;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .input-group div {
+            flex: 1;
+            min-width: 150px;
+            text-align: left;
+        }
+        .input-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+            display: block;
+        }
+        .input-group input, .input-group select {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: calc(100% - 24px); /* Full width minus padding */
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
             color: white;
             padding: 12px 25px;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
+            font-size: 18px;
             cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            outline: none;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
         }
-
-        .btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
+        button:hover {
+            background-color: #0056b3;
         }
-
-        .btn:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-            transform: translateY(0);
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            display: none;
         }
-
-        /* Message Display */
-        #message {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            min-height: 20px; /* To prevent layout shift */
-        }
-
-        .message-success {
-            background-color: #e6ffe6;
-            color: var(--success-color);
-            border: 1px solid var(--success-color);
-        }
-
-        .message-error {
-            background-color: #ffe6e6;
-            color: var(--error-color);
-            border: 1px solid var(--error-color);
-        }
-
-        .message-info {
-            background-color: #e6f7ff;
-            color: var(--info-color);
-            border: 1px solid var(--info-color);
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: var(--primary-color);
+        /* Loader styles */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            width: 30px;
+            height: 30px;
             animation: spin 1s linear infinite;
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 10px;
-            display: none; /* Hidden by default */
+            display: none; /* Initially hidden */
+            margin: 20px auto;
         }
-
-        .spinner.show {
-            display: inline-block;
-        }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        /* Features Section */
-        .features-section {
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 1px solid var(--border-color);
-            text-align: left;
-        }
-
-        .features-section h2 {
-            text-align: center;
-            color: var(--secondary-color);
-            margin-bottom: 25px;
-            font-weight: 600;
-            font-size: 1.8em;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: 1.05em;
-            color: #444;
-        }
-
-        .feature-item svg {
-            color: var(--primary-color);
-            margin-right: 15px;
-            min-width: 24px; /* Ensure icon size consistency */
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 40px;
-            font-size: 0.9em;
-            color: #777;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 30px 20px;
-            }
-            h1 {
-                font-size: 1.8em;
-            }
-            .btn {
-                width: 100%;
-                margin-top: 15px;
-            }
-            .input-group {
-                flex-direction: column;
-            }
-            input[type="text"] {
-                border-radius: 8px;
-                margin-bottom: 15px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Google Drive Downloader Pro</h1>
-        <p>আপনার Google Drive লিঙ্কটি এখানে পেস্ট করুন এবং দ্রুত ডাউনলোড করুন!</p>
+        <h1>📸 Image Resizer & Converter</h1>
+        <div class="upload-area" id="uploadArea">
+            <p>Drag & Drop your image here, or **Click to Upload**</p>
+            <input type="file" id="imageUpload" accept="image/*">
+        </div>
+
+        <div class="preview-area" id="previewArea">
+            <h2>Image Preview</h2>
+            <img id="imagePreview" src="#" alt="Image Preview">
+        </div>
 
         <div class="input-group">
-            <input type="text" id="driveLink" placeholder="e.g., https://drive.google.com/file/d/FILE_ID/view" autofocus>
-            <button class="btn" id="downloadButton">
-                <span class="spinner" id="spinner"></span> ডাউনলোড করুন
-            </button>
-        </div>
-
-        <div id="message" class="message-info">এখানে স্ট্যাটাস বার্তা দেখা যাবে।</div>
-
-        <div class="features-section">
-            <h2>✨ আমাদের ফিচারসমূহ</h2>
-            <div class="feature-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                <span>**অতি দ্রুত ডাউনলোড:** আমাদের অপটিমাইজড সার্ভারের মাধ্যমে ফাইল ডাউনলোড করুন বিদ্যুৎ গতিতে।</span>
+            <div>
+                <label for="newWidth">New Width (px):</label>
+                <input type="number" id="newWidth" placeholder="e.g., 800" value="800">
             </div>
-            <div class="feature-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                <span>**নিরাপদ এবং সুরক্ষিত:** আপনার ডেটা এনক্রিপ্টেড এবং নিরাপদ রাখা হয়।</span>
+            <div>
+                <label for="newHeight">New Height (px):</label>
+                <input type="number" id="newHeight" placeholder="e.g., 600" value="600">
             </div>
-            <div class="feature-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.5 15.2a9 9 0 1 0 5.5 8.16l.5-.32"></path></svg>
-                <span>**সরাসরি ডাউনলোড লিঙ্ক:** কোনো রিডাইরেক্ট ছাড়াই সরাসরি ডাউনলোডের সুযোগ।</span>
-            </div>
-            <div class="feature-item">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-monitor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                <span>**মাল্টি-ডিভাইস সাপোর্ট:** মোবাইল, ট্যাবলেট এবং ডেস্কটপ সব ডিভাইসেই কাজ করে।</span>
+            <div>
+                <label for="outputFormat">Output Format:</label>
+                <select id="outputFormat">
+                    <option value="image/jpeg">JPEG</option>
+                    <option value="image/png">PNG</option>
+                    <option value="image/webp">WebP</option>
+                </select>
             </div>
         </div>
 
-        <div class="footer">
-            <p>&copy; 2025 Google Drive Downloader Pro. All rights reserved.</p>
-        </div>
+        <button id="processButton" disabled>Resize & Convert & Download</button>
+        <div class="loader" id="loader"></div>
+        <p class="error-message" id="errorMessage"></p>
     </div>
 
     <script>
-        const downloadButton = document.getElementById('downloadButton');
-        const driveLinkInput = document.getElementById('driveLink');
-        const messageDiv = document.getElementById('message');
-        const spinner = document.getElementById('spinner');
+        const imageUpload = document.getElementById('imageUpload');
+        const uploadArea = document.getElementById('uploadArea');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewArea = document.getElementById('previewArea');
+        const newWidthInput = document.getElementById('newWidth');
+        const newHeightInput = document.getElementById('newHeight');
+        const outputFormatSelect = document.getElementById('outputFormat');
+        const processButton = document.getElementById('processButton');
+        const errorMessage = document.getElementById('errorMessage');
+        const loader = document.getElementById('loader');
 
-        // Function to update message with type (success, error, info)
-        function updateMessage(text, type) {
-            messageDiv.textContent = text;
-            messageDiv.className = `message-${type}`; // Update class for styling
-            // Optionally remove message after some time
-            // setTimeout(() => {
-            //     messageDiv.textContent = '';
-            //     messageDiv.className = '';
-            // }, 5000);
-        }
+        let originalImageFile = null;
 
-        downloadButton.addEventListener('click', async () => {
-            const driveLink = driveLinkInput.value.trim();
-            if (!driveLink) {
-                updateMessage('অনুগ্রহ করে একটি Google Drive লিঙ্ক দিন।', 'error');
+        // Handle file selection (click)
+        uploadArea.addEventListener('click', () => {
+            imageUpload.click();
+        });
+
+        imageUpload.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                originalImageFile = file;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    previewArea.style.display = 'block';
+                    processButton.disabled = false; // Enable button
+                    errorMessage.style.display = 'none'; // Hide error message
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle drag and drop
+        uploadArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            uploadArea.style.borderColor = '#007bff';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#cccccc';
+        });
+
+        uploadArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            uploadArea.style.borderColor = '#cccccc';
+            const file = event.dataTransfer.files[0];
+            if (file) {
+                originalImageFile = file;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    previewArea.style.display = 'block';
+                    processButton.disabled = false; // Enable button
+                    errorMessage.style.display = 'none'; // Hide error message
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        processButton.addEventListener('click', () => {
+            if (!originalImageFile) {
+                showError("Please upload an image first.");
                 return;
             }
 
-            updateMessage('ডাউনলোড লিঙ্ক তৈরি হচ্ছে...', 'info');
-            downloadButton.disabled = true;
-            spinner.classList.add('show'); // Show spinner
+            const newWidth = parseInt(newWidthInput.value);
+            const newHeight = parseInt(newHeightInput.value);
+            const outputFormat = outputFormatSelect.value;
+            const outputExtension = outputFormat.split('/')[1] || 'png'; // Get extension from mime type
 
-            try {
-                // *** এখানে আপনার Vercel Serverless Function-কে কল করতে হবে ***
-                // উদাহরণ: /api/download-drive-file
-                // নিশ্চিত করুন যে এই এন্ডপয়েন্টটি আপনার Vercel প্রজেক্টে বিদ্যমান।
-                const response = await fetch('/api/download-drive-file', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ link: driveLink })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.downloadUrl) {
-                        updateMessage(`ডাউনলোড শুরু হচ্ছে: ${data.fileName || 'ফাইল'}`, 'success');
-                        // নতুন উইন্ডোতে ডাউনলোড লিঙ্ক খুলুন
-                        window.open(data.downloadUrl, '_blank');
-                    } else {
-                        updateMessage(data.message || 'ডাউনলোড লিঙ্ক তৈরি করা যায়নি।', 'error');
-                    }
-                } else {
-                    const errorData = await response.json();
-                    updateMessage(`ডাউনলোড ব্যর্থ: ${errorData.message || 'অজানা ত্রুটি'}`, 'error');
-                }
-            } catch (error) {
-                console.error('Network Error:', error);
-                updateMessage('একটি নেটওয়ার্ক ত্রুটি হয়েছে। আবার চেষ্টা করুন।', 'error');
-            } finally {
-                downloadButton.disabled = false;
-                spinner.classList.remove('show'); // Hide spinner
+            if (isNaN(newWidth) || newWidth <= 0 || isNaN(newHeight) || newHeight <= 0) {
+                showError("Please enter valid positive numbers for width and height.");
+                return;
             }
+
+            loader.style.display = 'block'; // Show loader
+            processButton.disabled = true; // Disable button during processing
+            errorMessage.style.display = 'none'; // Hide any previous error
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+                    let fileName = originalImageFile.name;
+                    const dotIndex = fileName.lastIndexOf('.');
+                    if (dotIndex > -1) {
+                        fileName = fileName.substring(0, dotIndex);
+                    }
+                    const newFileName = `${fileName}_resized.${outputExtension}`;
+
+                    // Convert canvas to a data URL and create a download link
+                    canvas.toBlob((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = newFileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url); // Clean up the URL object
+
+                        loader.style.display = 'none'; // Hide loader
+                        processButton.disabled = false; // Re-enable button
+                    }, outputFormat); // Use selected format for output
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(originalImageFile);
         });
 
-        // Initialize message on load
-        document.addEventListener('DOMContentLoaded', () => {
-            updateMessage('আপনার লিঙ্ক পেস্ট করার জন্য প্রস্তুত।', 'info');
-        });
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            loader.style.display = 'none'; // Hide loader if visible
+            processButton.disabled = false; // Re-enable button
+        }
     </script>
 </body>
-  </html>
+</html>
