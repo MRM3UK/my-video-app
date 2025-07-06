@@ -237,6 +237,10 @@
 
         let originalImageFile = null;
 
+        // Get computed CSS variable values
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+        const borderColor = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim();
+
         // Function to update dimensions based on aspect ratio
         function updateDimensions(source) {
             if (!originalImageFile) return;
@@ -262,7 +266,7 @@
                         newWidthInput.value = newWidth;
                     } else if (source === 'file') { // When a new file is uploaded, set sensible defaults
                         newWidthInput.value = originalWidth > 1200 ? 1200 : originalWidth;
-                        newHeightInput.value = originalHeight > 900 ? 900 : originalHeight;
+                        newHeightInput.value = Math.round((newWidthInput.value / originalWidth) * originalHeight); // Calculate height based on new width
                     }
                 };
                 img.src = event.target.result;
@@ -294,16 +298,16 @@
         // Handle drag and drop
         uploadArea.addEventListener('dragover', (event) => {
             event.preventDefault();
-            uploadArea.style.borderColor = var(--primary-color);
+            uploadArea.style.borderColor = primaryColor; // Corrected usage
         });
 
         uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.borderColor = var(--border-color);
+            uploadArea.style.borderColor = borderColor; // Corrected usage
         });
 
         uploadArea.addEventListener('drop', (event) => {
             event.preventDefault();
-            uploadArea.style.borderColor = var(--border-color);
+            uploadArea.style.borderColor = borderColor; // Corrected usage
             const file = event.dataTransfer.files[0];
             if (file) {
                 originalImageFile = file;
