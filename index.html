@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Drive Downloader Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #45a049;
+            --secondary-color: #007BFF;
+            --background-light: #f4f7f6;
+            --background-dark: #e0e5ec;
+            --text-color: #333;
+            --card-background: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --info-color: #007bff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--background-light);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+
+        /* Container */
+        .container {
+            background: var(--card-background);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid var(--border-color);
+        }
+
+        .container:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 2.2em;
+        }
+
+        p {
+            margin-bottom: 25px;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        /* Input Group */
+        .input-group {
+            display: flex;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--background-light);
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 15px 20px;
+            border: none;
+            outline: none;
+            font-size: 1em;
+            background: transparent;
+            color: var(--text-color);
+        }
+
+        input[type="text"]::placeholder {
+            color: #888;
+        }
+
+        /* Buttons */
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            outline: none;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: translateY(0);
+        }
+
+        /* Message Display */
+        #message {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-height: 20px; /* To prevent layout shift */
+        }
+
+        .message-success {
+            background-color: #e6ffe6;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .message-error {
+            background-color: #ffe6e6;
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        .message-info {
+            background-color: #e6f7ff;
+            color: var(--info-color);
+            border: 1px solid var(--info-color);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+            display: none; /* Hidden by default */
+        }
+
+        .spinner.show {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Features Section */
+        .features-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .features-section h2 {
+            text-align: center;
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 1.8em;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+            color: #444;
+        }
+
+        .feature-item svg {
+            color: var(--primary-color);
+            margin-right: 15px;
+            min-width: 24px; /* Ensure icon size consistency */
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .btn {
+                width: 100%;
+                margin-top: 15px;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+            input[type="text"] {
+                border-radius: 8px;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Google Drive Downloader Pro</h1>
+        <p>আপনার Google Drive লিঙ্কটি এখানে পেস্ট করুন এবং দ্রুত ডাউনলোড করুন!</p>
+
+        <div class="input-group">
+            <input type="text" id="driveLink" placeholder="e.g., https://drive.google.com/file/d/FILE_ID/view" autofocus>
+            <button class="btn" id="downloadButton">
+                <span class="spinner" id="spinner"></span> ডাউনলোড করুন
+            </button>
+        </div>
+
+        <div id="message" class="message-info">এখানে স্ট্যাটাস বার্তা দেখা যাবে।</div>
+
+        <div class="features-section">
+            <h2>✨ আমাদের ফিচারসমূহ</h2>
+            <div class="feature-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                <span>**অতি দ্রুত ডাউনলোড:** আমাদের অপটিমাইজড সার্ভারের মাধ্যমে ফাইল ডাউনলোড করুন বিদ্যুৎ গতিতে।</span>
+            </div>
+            <div class="feature-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <span>**নিরাপদ এবং সুরক্ষিত:** আপনার ডেটা এনক্রিপ্টেড এবং নিরাপদ রাখা হয়।</span>
+            </div>
+            <div class="feature-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.5 15.2a9 9 0 1 0 5.5 8.16l.5-.32"></path></svg>
+                <span>**সরাসরি ডাউনলোড লিঙ্ক:** কোনো রিডাইরেক্ট ছাড়াই সরাসরি ডাউনলোডের সুযোগ।</span>
+            </div>
+            <div class="feature-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-monitor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                <span>**মাল্টি-ডিভাইস সাপোর্ট:** মোবাইল, ট্যাবলেট এবং ডেস্কটপ সব ডিভাইসেই কাজ করে।</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 Google Drive Downloader Pro. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        const downloadButton = document.getElementById('downloadButton');
+        const driveLinkInput = document.getElementById('driveLink');
+        const messageDiv = document.getElementById('message');
+        const spinner = document.getElementById('spinner');
+
+        // Function to update message with type (success, error, info)
+        function updateMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message-${type}`; // Update class for styling
+            // Optionally remove message after some time
+            // setTimeout(() => {
+            //     messageDiv.textContent = '';
+            //     messageDiv.className = '';
+            // }, 5000);
+        }
+
+        downloadButton.addEventListener('click', async () => {
+            const driveLink = driveLinkInput.value.trim();
+            if (!driveLink) {
+                updateMessage('অনুগ্রহ করে একটি Google Drive লিঙ্ক দিন।', 'error');
+                return;
+            }
+
+            updateMessage('ডাউনলোড লিঙ্ক তৈরি হচ্ছে...', 'info');
+            downloadButton.disabled = true;
+            spinner.classList.add('show'); // Show spinner
+
+            try {
+                // *** এখানে আপনার Vercel Serverless Function-কে কল করতে হবে ***
+                // উদাহরণ: /api/download-drive-file
+                // নিশ্চিত করুন যে এই এন্ডপয়েন্টটি আপনার Vercel প্রজেক্টে বিদ্যমান।
+                const response = await fetch('/api/download-drive-file', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ link: driveLink })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.downloadUrl) {
+                        updateMessage(`ডাউনলোড শুরু হচ্ছে: ${data.fileName || 'ফাইল'}`, 'success');
+                        // নতুন উইন্ডোতে ডাউনলোড লিঙ্ক খুলুন
+                        window.open(data.downloadUrl, '_blank');
+                    } else {
+                        updateMessage(data.message || 'ডাউনলোড লিঙ্ক তৈরি করা যায়নি।', 'error');
+                    }
+                } else {
+                    const errorData = await response.json();
+                    updateMessage(`ডাউনলোড ব্যর্থ: ${errorData.message || 'অজানা ত্রুটি'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Network Error:', error);
+                updateMessage('একটি নেটওয়ার্ক ত্রুটি হয়েছে। আবার চেষ্টা করুন।', 'error');
+            } finally {
+                downloadButton.disabled = false;
+                spinner.classList.remove('show'); // Hide spinner
+            }
+        });
+
+        // Initialize message on load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateMessage('আপনার লিঙ্ক পেস্ট করার জন্য প্রস্তুত।', 'info');
+        });
+    </script>
+</body>
+  </html>
